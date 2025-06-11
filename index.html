@@ -1,239 +1,170 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>todolist</title>
-    <style>
-        body {
-            background-color: azure;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        input {
-            width: 350px;
-            height: 40px;
-            border-radius: 5px;
-
-            border: 1px solid #ccc;
-
-            font-size: 16px;
-            outline: none;
-        }
-
-        button {
-            display: inline;
-            height: 40px;
-            padding: 5px 20px;
-            font-size: 20px;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
-            background-color: rgb(255, 177, 32);
-            color: white;
-        }
-
-        button:hover {
-            background-color: rgb(255, 155, 0);
-
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 90%;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        tr {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #ddd;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive ToDo List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-azure-100 min-h-screen flex flex-col items-center py-8 px-4 space-y-4">
+  <div class="flex flex-col md:flex-row gap-4 flex-wrap justify-center items-center">
+    <input type="text" id="name" placeholder="ENTER NAME"
+      class="w-full md:w-72 h-10 px-3 rounded border border-gray-300 text-base outline-none" />
+    <input type="text" id="age" placeholder="AGE"
+      class="w-full md:w-40 h-10 px-3 rounded border border-gray-300 text-base outline-none" />
+    <input type="text" id="address" placeholder="ADDRESS"
+      class="w-full md:w-72 h-10 px-3 rounded border border-gray-300 text-base outline-none" />
+    <input type="text" id="contact" placeholder="CONTACT"
+      class="w-full md:w-64 h-10 px-3 rounded border border-gray-300 text-base outline-none" />
+  </div>
 
-    <input type="text" id="name" placeholder="ENTER NAME">
-    <input type="text" id="age" placeholder="AGE">
-    <input type="text" id="address" placeholder="ADDRESS">
-    <input type="text" id="contact" placeholder="CONTACT">
-    <button onclick="add()">ADD</button>
-    <button onclick="update()">update</button>
+  <div class="flex gap-4 mt-4">
+    <button onclick="add()"
+      class="bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-2 rounded text-lg">ADD</button>
+    <button onclick="update()"
+      class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded text-lg">Update</button>
+  </div>
 
-    <table>
-        <tr>
-            <th>Index</th>
-            <th>Name</th>
-            <th>AGE</th>
-            <th>ADDRESS</th>
-            <th>CONTACT</th>
+  <div class="overflow-x-auto w-full mt-6 px-2">
+    <table class="min-w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="bg-green-600 text-white">
+          <th class="border px-4 py-2">Index</th>
+          <th class="border px-4 py-2">Name</th>
+          <th class="border px-4 py-2">Age</th>
+          <th class="border px-4 py-2">Address</th>
+          <th class="border px-4 py-2">Contact</th>
+          <th class="border px-4 py-2">Delete</th>
+          <th class="border px-4 py-2">Edit</th>
+          <th class="border px-4 py-2">Up</th>
+          <th class="border px-4 py-2">Down</th>
         </tr>
+      </thead>
+      <tbody id="table-body" class="bg-gray-100 text-center">
+        <!-- Data rows will appear here -->
+      </tbody>
     </table>
-    <script>
-        var inp1 = document.getElementById('name')
-        var inp2 = document.getElementById('age')
-        var inp3 = document.getElementById('address')
-        var inp4 = document.getElementById('contact')
-        var table = document.querySelector('table');
-        show()
-        //// for clear inputs
-        function clearinputs() {
-            inp1.value = null
-            inp2.value = null
-            inp3.value = null
-            inp4.value = null
-        }
+  </div>
 
-        function add() {
-            var rowdata = {
-                name: inp1.value,
-                age: inp2.value,
-                address: inp3.value,
-                contact: inp4.value,
-            }
-            if (inp1.value == '' && inp2.value == '' && inp3.value == '' && inp4.value == '') {
-                alert('Please enter some fields');
-                return
-            }
-            else {
-                var datas = localStorage.getItem('data') ? JSON.parse(localStorage.getItem('data')) : []
+  <script>
+    var inp1 = document.getElementById('name')
+    var inp2 = document.getElementById('age')
+    var inp3 = document.getElementById('address')
+    var inp4 = document.getElementById('contact')
+    var tbody = document.getElementById('table-body');
+    show()
 
-                datas.push(rowdata)
-                console.log(datas);
-                localStorage.setItem('data', JSON.stringify(datas))
-                clearinputs();
-                show();
-            }
-        }
+    function clearinputs() {
+      inp1.value = ''
+      inp2.value = ''
+      inp3.value = ''
+      inp4.value = ''
+    }
 
-        function delme(index) {
-            var datas = JSON.parse(localStorage.getItem('data'))
-            datas.splice(index, 1);
-            localStorage.setItem('data', JSON.stringify(datas))
-            show();
+    function add() {
+      if (!inp1.value && !inp2.value && !inp3.value && !inp4.value) {
+        alert('Please enter some fields');
+        return;
+      }
 
-        }
+      var rowdata = {
+        name: inp1.value,
+        age: inp2.value,
+        address: inp3.value,
+        contact: inp4.value,
+      }
 
-        var ids = null;
-        function editme(index) {
-            var datas = JSON.parse(localStorage.getItem('data'))
-            ids = index;
-            inp1.value = datas[index].name
-            inp2.value = datas[index].age
-            inp3.value = datas[index].address
-            inp4.value = datas[index].contact
-        }
+      var datas = JSON.parse(localStorage.getItem('data') || '[]')
+      datas.push(rowdata)
+      localStorage.setItem('data', JSON.stringify(datas))
+      clearinputs();
+      show();
+    }
 
-        function shiftup(index) {
-            var datas = JSON.parse(localStorage.getItem('data'))
-            if (index === 0) {
-                datas.push(datas[index])
-                datas.shift()
-            }
-            else {
-                var temp = datas[index]
-                datas[index] = datas[index - 1]
-                datas[index - 1] = temp
-            }
-            localStorage.setItem('data', JSON.stringify(datas))
-            show();
-        }
-        function DOWN(index) {
-            
-      
-            var datas = JSON.parse(localStorage.getItem('data'))
-            console.log(datas.length,'lenght');
-            if(index === datas.length-1)
-            {
-                datas.unshift(datas[index])
-                datas.pop()
-            }
-            else
-            {
-                var temp = datas[index]
-            datas[index] = datas[index + 1]
-            datas[index = 1] = temp
-            }
-           
-            localStorage.setItem('data', JSON.stringify(datas))
-            show();
-        }
-        function update() {
-            if (inp1.value == '' && inp2.value == '' && inp3.value == '' && inp4.value == '') {
-                alert('Please enter all fields');
-                return;
-            }
-            else {
-                if (ids == null) {
-                    return;
-                }
-                else {
-                    var datas = JSON.parse(localStorage.getItem('data'))
-                    datas[ids].name = inp1.value;
-                    datas[ids].age = inp2.value;
-                    datas[ids].address = inp3.value;
-                    datas[ids].contact = inp4.value;
-                    localStorage.setItem('data', JSON.stringify(datas))
-                    clearinputs();
-                    ids = null
-                    show()
-                }
-            }
-        }
-        function show() {
-            var datas = JSON.parse(localStorage.getItem('data'))
-            table.innerHTML = `<tr>
-                <th>Index</th>
-            <th>Name</th>
-            <th>AGE</th>
-            <th>ADDRESS</th>
-            <th>CONTACT</th>
-            <th>deletehere</th>
-            <th>Edit here</th>
-            <th>Shift Up</th>
-            <th>Shift Down</th>
-          </tr>
-    `
-            datas.map((data, index) => {
+    function delme(index) {
+      var datas = JSON.parse(localStorage.getItem('data'))
+      datas.splice(index, 1);
+      localStorage.setItem('data', JSON.stringify(datas))
+      show();
+    }
 
-                return table.innerHTML += ` <tr>
-    <td>${index}</td>
-    <td>${data.name}</td>
-    <td>${data.age}</td>
-    <td>${data.address}</td>
-    <td>${data.contact}</td>
-    
-    <td><button onclick="delme(${index})" >DELETE</button></td>
-    <td> <button onclick="editme(${index})" >EditME</button></td>
-     <td><button onclick="shiftup(${index})" >UP</button></td>
-     <td> <button onclick="DOWN(${index})" >DOWN</button></td>
-  </tr>`
-            });
+    var ids = null;
 
-        }
-    </script>
+    function editme(index) {
+      var datas = JSON.parse(localStorage.getItem('data'))
+      ids = index;
+      inp1.value = datas[index].name
+      inp2.value = datas[index].age
+      inp3.value = datas[index].address
+      inp4.value = datas[index].contact
+    }
+
+    function shiftup(index) {
+      var datas = JSON.parse(localStorage.getItem('data'))
+      if (index === 0) {
+        datas.push(datas[index])
+        datas.shift()
+      } else {
+        [datas[index], datas[index - 1]] = [datas[index - 1], datas[index]]
+      }
+      localStorage.setItem('data', JSON.stringify(datas))
+      show();
+    }
+
+    function DOWN(index) {
+      var datas = JSON.parse(localStorage.getItem('data'))
+      if (index === datas.length - 1) {
+        datas.unshift(datas[index])
+        datas.pop()
+      } else {
+        [datas[index], datas[index + 1]] = [datas[index + 1], datas[index]]
+      }
+      localStorage.setItem('data', JSON.stringify(datas))
+      show();
+    }
+
+    function update() {
+      if (!inp1.value && !inp2.value && !inp3.value && !inp4.value) {
+        alert('Please enter all fields');
+        return;
+      }
+      if (ids == null) return;
+
+      var datas = JSON.parse(localStorage.getItem('data'))
+      datas[ids] = {
+        name: inp1.value,
+        age: inp2.value,
+        address: inp3.value,
+        contact: inp4.value,
+      }
+      localStorage.setItem('data', JSON.stringify(datas))
+      clearinputs();
+      ids = null;
+      show();
+    }
+
+    function show() {
+      var datas = JSON.parse(localStorage.getItem('data') || '[]')
+      tbody.innerHTML = ''
+      datas.forEach((data, index) => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-200">
+            <td class="border px-2 py-1">${index}</td>
+            <td class="border px-2 py-1">${data.name}</td>
+            <td class="border px-2 py-1">${data.age}</td>
+            <td class="border px-2 py-1">${data.address}</td>
+            <td class="border px-2 py-1">${data.contact}</td>
+            <td class="border px-2 py-1"><button onclick="delme(${index})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Delete</button></td>
+            <td class="border px-2 py-1"><button onclick="editme(${index})" class="bg-blue-400 hover:bg-blue-500 text-white px-2 py-1 rounded">Edit</button></td>
+            <td class="border px-2 py-1"><button onclick="shiftup(${index})" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded">Up</button></td>
+            <td class="border px-2 py-1"><button onclick="DOWN(${index})" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded">Down</button></td>
+          </tr>`;
+      })
+    }
+  </script>
 </body>
 
 </html>
